@@ -7,6 +7,10 @@ app.use(express.json());
 
 const projects = [];
 
+function logRequests(request, response, next) {
+    
+}
+
 app.get("/projects", (request, response) => {
   const { title } = request.query;
 
