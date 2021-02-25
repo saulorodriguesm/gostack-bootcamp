@@ -5,9 +5,10 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "uuidv4": "^6.2.6"
   },
-  "scripts":{
+  "scripts": {
     "watch": "nodemon src/index.js"
   }
 }

@@ -1,50 +1,67 @@
-const express = require('express');
+const express = require("express");
+const { uuid } = require("uuidv4");
 
 const app = express();
 
 app.use(express.json());
 
-app.get('/projects', (request, response) => {
-    const { title, owner} = request.query;
+const projects = [];
 
-    console.log(title)
-    
-    return response.json([
-        'Luan',
-        'Mateus Vital'
-    ]);
+app.get("/projects", (request, response) => {
+  const { title } = request.query;
+
+  const results = title
+    ? projects.filter((project) => project.title.includes(title))
+    : projects;
+
+  return response.json(results);
 });
 
 // Métodos POST, PUT/Path e Delete não são acessiveis via browser
 
-app.post('/projects', (request, response) => {
-    const body = request.body;
+app.post("/projects", (request, response) => {
+  const { title, owner } = request.body;
 
-    console.log(body)
+  const project = { id: uuid(), title, owner };
 
-    return response.json([
-        'Otero',
-        'Jô'
-    ]);
+  projects.push(project);
+
+  return response.json(project);
 });
 
-app.put('/projects/:id', (request, response) => {
-    const params = request.params;
+app.put("/projects/:id", (request, response) => {
+  const { id } = request.params;
+  const { title, owner } = request.body;
 
-    console.log(params)
-    return response.json([
-        'Araos',
-        'Cantillo'
-    ]);
+  const projectIndex = projects.findIndex((project) => project.id == id);
+
+  projectIndex < 0
+    ? response.status(400).json({ error: "Project not found." })
+    : "";
+
+  const project = {
+    id,
+    title,
+    owner,
+  };
+  projects[projectIndex] = project;
+
+  return response.json(project);
 });
 
-app.delete('/projects/:id', (request, response) => {
-    return response.json([
-        'Araos',
-        'Cantillo'
-    ]);
+app.delete("/projects/:id", (request, response) => {
+  const { id } = request.params;
+
+  const projectIndex = projects.findIndex((project) => project.id == id);
+
+  projectIndex < 0
+    ? response.status(400).json({ error: "Project not found." })
+    : "";
+
+  projects.splice(projectIndex, 1);
+  return response.status(204).send();
 });
 
-app.listen(3333 , () => {
-    console.log('Back-end started');
+app.listen(3333, () => {
+  console.log("Back-end started");
 });
